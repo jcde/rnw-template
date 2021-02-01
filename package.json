@@ -20,6 +20,16 @@
     "expo": "*",
     "expo-av": "*",
     "react-native-unimodules": "*",
+
+    "expo-app-loading": "*", 
+    "react-native-gesture-handler": "*",
+    "react-native-reanimated": "*",
+    "react-native-screens": "*",
+    "react-native-svg": "*",
+    "react-navigation": "*",
+    "react-navigation-drawer": "*",
+    "react-navigation-stack": "*",
+    
     "native-base": "*",
     "@react-native-community/slider": "*"
   },
