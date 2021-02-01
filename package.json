@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "records",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -18,11 +18,17 @@
     "react-native": "*",
     "react-native-web": "*",
     "expo": "*",
-    "react-native-unimodules": "*"
+    "expo-av": "*",
+    "react-native-unimodules": "*",
+    "native-base": "*",
+    "@react-native-community/slider": "*"
   },
   "devDependencies": {
-    "@react-native-community/eslint-config": "*",
+    "@babel/core": "*",
+    "@expo/webpack-config": "*",
+    "react-scripts": "*",
     "eslint": "*",
+    "@react-native-community/eslint-config": "*",
     "react-test-renderer": "*",
     "typescript": "*",
     "@types/react": "*",
