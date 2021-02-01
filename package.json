@@ -17,6 +17,7 @@
     "react-dom": "*",
     "react-native": "*",
     "react-native-web": "*",
+	"react-scripts": "*",
     "expo": "*",
     "react-native-unimodules": "*"
   },
