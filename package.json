@@ -17,11 +17,12 @@
     "react-dom": "*",
     "react-native": "*",
     "react-native-web": "*",
-	"react-scripts": "*",
     "expo": "*",
     "react-native-unimodules": "*"
   },
   "devDependencies": {
+    "@babel/core": "*",
+    "react-scripts": "*",
     "@react-native-community/eslint-config": "*",
     "eslint": "*",
     "react-test-renderer": "*",
