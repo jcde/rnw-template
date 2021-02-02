@@ -1,33 +1,46 @@
-import React, { useState, useEffect, useContext, useReducer } from 'react'
+import React, { useState, useEffect, useContext, useReducer, useRef } from 'react'
 import { View, Text, Platform } from "react-native";
 import * as Permissions from "expo-permissions";
 import CupertinoFooter from "../components/CupertinoFooter";
-import CupertinoSlider from "../components/CupertinoSlider";
 import ButtonShare from "../components/MaterialButtonShare";
 import MaterialCardWithoutImage from "../components/MaterialCardWithoutImage";
-import ChipWithButton from "../components/MaterialChipWithCloseButton";
-import Slider from "@react-native-community/slider";
+import Dialog from "react-native-dialog";
 
 import { Audio, AVPlaybackStatus } from "expo-av";
 import styles from './RecordingViewStyle';
-import { TextStroke } from '../components/TextStroke';
-import Dialog from "react-native-dialog";
+import PlaySlider, { _getMMSSFromMillis } from '../components/PlaySlider';
+import PlaySliderSaved from '../components/PlaySliderSaved';
+
+interface IRecording {
+  title: string
+  sound: any
+  playStatus: AVPlaybackStatus
+  isPlaying: boolean
+}
 
 function RecordingView(props) {
-  /*  private shouldPlayAtEndOfSeek: boolean;
-  
-    };*/
-
   const [haveRecordingPermissions, setHaveRecordingPermissions] = useState(false)
-
   const [isLoading, setIsLoading] = useState(false)
 
-  const [isRecording, setIsRecording] = useState(false)
-  const [sound, setSound] = useState(null)
+  // Audio.Recording, check if == null
   const [recording, setRecording] = useState(null)
+  // needed because recording may be in status Done
+  const [isRecording, setIsRecording] = useState(false)
   const [recordingDuration, setRecordingDuration] = useState(null)
 
+  // recording is converted in sound
+  const [sound, setSound] = useState(null)
+  // sound is saved in recordings with title
+  const [isSoundTitled, setIsSoundTitled] = useState(false)
+  // IRecording[]
+  const [recordings, setRecordings] = useState([])
+
+  // sound some time is not allowed to play
   const [isPlaybackAllowed, setIsPlaybackAllowed] = useState(false)
+
+  const [dialogAsk, setDialogAsk] = useState(0)
+  const dialogAskInputRef = useRef(null);
+
   const [playStatus, setPlayStatus] = useState({
     durationMillis: null, // soundDuration
     positionMillis: null, // soundPosition
@@ -48,21 +61,53 @@ function RecordingView(props) {
   }, [])
 
   const _onRecordPressed = async () => {
-    if (isRecording) {
-      _stopRecordingAndEnablePlayback();
+    if (recording) {
+      _stopRecordingAndEnablePlayback()
+      setDialogAsk(1)
     } else {
-      _stopPlaybackAndBeginRecording();
+      if (sound) {
+        if (isPlaying) {
+          sound.pauseAsync()
+          setIsPlaying(false)
+        }
+        setDialogAsk(2)
+      } else
+        _stopPlaybackAndBeginRecording()
     }
   };
+  // when there is no sound or sound is not saved
+  const _onDeletePressed = async () => {
+    if (sound)
+      _stopPlaying()
+    else
+      await _stopRecording()
+  }
+  const cancelSound = () => {
+    if (dialogAsk == 2) {
+      _stopPlaybackAndBeginRecording()
+    }
+    setDialogAsk(0)
+  };
+  const saveSound = () => {
+    let input = dialogAskInputRef.current
+    playStatus.durationMillis = recordingDuration
+    const newRecording: IRecording = {
+      title: input.value != '' ? input.value : _defaultTitle(true),
+      sound,
+      playStatus: playStatus,
+      isPlaying: false,
+    }
+    setRecordings([newRecording, ...recordings])
+
+    _stopPlaying(false)
+    setDialogAsk(0)
+  };
+
 
   const _stopPlaybackAndBeginRecording = async () => {
     setIsLoading(true)
-
-    if (sound !== null) {
-      await sound.unloadAsync();
-      sound.setOnPlaybackStatusUpdate(null);
-      setSound(null);
-    }
+    _stopPlaying()
+    await _stopRecording()
     await Audio.setAudioModeAsync({
       allowsRecordingIOS: true,
       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
@@ -72,10 +117,6 @@ function RecordingView(props) {
       playThroughEarpieceAndroid: false,
       staysActiveInBackground: true,
     });
-    if (recording !== null) {
-      recording.setOnRecordingStatusUpdate(null);
-      setRecording(null);
-    }
 
     const newRecording = new Audio.Recording();
     await newRecording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY);
@@ -98,28 +139,49 @@ function RecordingView(props) {
       }
     }
   };
+  const _stopRecording = async () => {
+    if (recording) {
+      recording.setOnRecordingStatusUpdate(null)
+      try {
+        await recording.stopAndUnloadAsync();
+      } catch (error) {
+        // On Android, calling stop before any data has been collected results in
+        // an E_AUDIO_NODATA error. This means no audio data has been written to
+        // the output file is invalid.
+        if (error.code === "E_AUDIO_NODATA") {
+          console.log(
+            `Stop was called too quickly, no data has yet been received (${error.message})`
+          );
+        } else {
+          console.log("STOP ERROR: ", error.code, error.name, error.message);
+        }
+        setIsLoading(false)
+      } finally {
+        setRecording(null)
+      }
+    }
+    setIsRecording(false)
+    // value will be used  setRecordingDuration(null)
+  }
+  const _stopPlaying = async (unload = true) => {
+    if (sound) {
+      if (unload) {
+        sound.setOnPlaybackStatusUpdate(null)
+        await sound.unloadAsync()
+      }
+      setSound(null)
+    }
+    setIsPlaying(false)
+    setIsPlaybackAllowed(false)
+  }
 
   const _stopRecordingAndEnablePlayback = async () => {
-    setIsLoading(true)
     if (!recording) {
       return;
     }
-    try {
-      await recording.stopAndUnloadAsync();
-    } catch (error) {
-      // On Android, calling stop before any data has been collected results in
-      // an E_AUDIO_NODATA error. This means no audio data has been written to
-      // the output file is invalid.
-      if (error.code === "E_AUDIO_NODATA") {
-        console.log(
-          `Stop was called too quickly, no data has yet been received (${error.message})`
-        );
-      } else {
-        console.log("STOP ERROR: ", error.code, error.name, error.message);
-      }
-      setIsLoading(false)
-      return;
-    }
+    setIsLoading(true)
+    _stopPlaying()
+    await _stopRecording() // here setRecording(null)
 
     if (Platform.OS == 'web') {
       console.log(`FILE URL: ${recording.getURI()}`);
@@ -149,7 +211,10 @@ function RecordingView(props) {
       _updateScreenForSoundStatus
     );
     setSound(newSound);
+
     setIsLoading(false);
+
+    return newSound
   }
 
   // called during playback as well, but not for every tick
@@ -170,39 +235,8 @@ function RecordingView(props) {
   };
 
 
-  const _getMMSSFromMillis = (millis: number) => {
-    const totalSeconds = millis / 1000;
-    const seconds = Math.floor(totalSeconds % 60);
-    const minutes = Math.floor(totalSeconds / 60);
-
-    const padWithZero = (number) => {
-      const string = number.toString();
-      if (number < 10) {
-        return "0" + string;
-      }
-      return string;
-    };
-    return padWithZero(minutes) + ":" + padWithZero(seconds);
-  }
-
-  const _getPlaybackTimestamp = () => {
-    if (
-      sound != null &&
-      playStatus.positionMillis != null &&
-      playStatus.durationMillis != null
-    ) {
-      return `${_getMMSSFromMillis(
-        playStatus.positionMillis
-      )} / ${_getMMSSFromMillis(playStatus.durationMillis)}`;
-    }
-    return "";
-  }
-
   const _getRecordingTimestamp = () => {
-    if (recordingDuration != null) {
-      return `${_getMMSSFromMillis(recordingDuration)}`;
-    }
-    return `${_getMMSSFromMillis(0)}`;
+    return `${_getMMSSFromMillis((isRecording && recordingDuration) ? recordingDuration : 0)}`;
   }
 
 
@@ -218,33 +252,20 @@ function RecordingView(props) {
       }
     }*/
   };
-  const _onPlayPausePressed0 = () => {
-    if (isPlaying) {
-      sound.pauseAsync();
-    } else {
-      sound.playAsync();
-    }
-    setIsPlaying(!isPlaying)
-  };
-  const _onPlayPausePressed1 = () => {
-    if (isPlaying) {
-      sound.pauseAsync();
-    } else {
-      sound.playAsync();
-    }
-    setIsPlaying(!isPlaying)
-  };
-  const _getSeekSliderPosition = () => {
-    if (
-      sound != null &&
-      playStatus.durationMillis != null &&
-      playStatus.positionMillis != null
-    ) {
-      return playStatus.positionMillis / playStatus.durationMillis;
-    }
-    return 0;
-  }
+  const _onPlayPausePressed0 = async () => {
+    let souncWas = sound ?? await _stopRecordingAndEnablePlayback()
 
+    if (isPlaying) {
+      souncWas.pauseAsync();
+    } else {
+      souncWas.playAsync();
+    }
+    setIsPlaying(!isPlaying)
+  };
+
+  const _defaultTitle = (saved = false) => {
+    return `${saved ? 'New' : 'Unsaved'} recording ${recordings.length + 1}`
+  }
 
   if (!haveRecordingPermissions) {
     return (
@@ -269,51 +290,43 @@ function RecordingView(props) {
         flex: 1, justifyContent: "flex-end", alignItems: 'strech',
         marginLeft: 10, marginRight: 10
       }}>
-  <View visible={true}>
-    <Dialog.Container>
-      <Dialog.Title>Account delete</Dialog.Title>
-      <Dialog.Description>
-        Do you want to delete this account? You cannot undo this action.
-      </Dialog.Description>
-      <Dialog.Button label="Cancel" />
-      <Dialog.Button label="Delete" />
-    </Dialog.Container>
-  </View>
-
-        <View style={styles.trackRow}>
-          <ButtonShare icon="play-outline" onPress={_onPlayPausePressed1}
-            disabled={!isPlaybackAllowed || isLoading} />
-          <ChipWithButton iconName="close" >
-            <Slider style={{
-              position: 'absolute', left: 0, zIndex: -1,
-              width: '100%',
-            }}
-              trackHeight={40} thumbSize={0}
-              maximumTrackTintColor={'transparent'}
-              value={_getSeekSliderPosition()}
-              onSlidingComplete={_onSeekSliderSlidingComplete}
-              disabled={isPlaybackAllowed || isLoading}
-            />
-          </ChipWithButton>
-          <Text style={styles.trackText}>{_getPlaybackTimestamp()}</Text>
-          <ButtonShare icon="delete-outline" />
-        </View>
+        <PlaySliderSaved index={2} recordings={recordings} redraw={setRecordings} />
+        <PlaySliderSaved index={1} recordings={recordings} redraw={setRecordings} />
+        <PlaySliderSaved index={0} recordings={recordings} redraw={setRecordings} />
         <View style={styles.trackRow}>
           <ButtonShare icon={isPlaying ? "pause-circle-outline" : "play-outline"}
-            onPress={_onPlayPausePressed0} />
-          <Text style={{ flex: 1, alignSelf: 'center', textAlign: 'center' }}>{_getRecordingTimestamp()}</Text>
-          <ButtonShare icon="delete-outline" />
+            onPress={_onPlayPausePressed0}
+            disabled={!(isPlaybackAllowed || isRecording && (recordingDuration > 2000))} />
+          {sound && <PlaySlider title={_defaultTitle()}
+            disabled={isPlaybackAllowed || isLoading}
+            playStatus={playStatus} recordingDuration={recordingDuration} />}
+          {!sound &&
+            <Text style={{ flex: 1, alignSelf: 'center', textAlign: 'center', fontSize: 20 }}
+            >{_getRecordingTimestamp()}</Text>}
+          <ButtonShare icon="delete-outline" disabled={!(isRecording || isPlaybackAllowed)}
+            onPress={_onDeletePressed} />
         </View>
       </View>
       <View style={styles.recordButtonRow}>
         <ButtonShare
-          iconName="share-variant"
           icon={isRecording ? 'content-save-outline' : 'microphone-outline'}
           style={styles.recordButton}
           iconStyle={{ fontSize: 40 }}
           onPress={_onRecordPressed}
           disabled={isLoading}
         ></ButtonShare>
+      </View>
+      <View>
+        <Dialog.Container visible={dialogAsk} onBackdropPress={cancelSound}>
+          <Dialog.Title>Save your recording</Dialog.Title>
+          <Dialog.Description>
+            TITLE
+          </Dialog.Description>
+          <Dialog.Input placeholder={_defaultTitle()} textInputRef={dialogAskInputRef}
+            style={{ fontSize: 24 }} />
+          <Dialog.Button label={dialogAsk == 2 ? 'DELETE' : 'Cancel'} onPress={cancelSound} />
+          <Dialog.Button label="Save" onPress={saveSound} />
+        </Dialog.Container>
       </View>
       <CupertinoFooter
         icon="microphone"

@@ -4,9 +4,10 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 function MaterialButtonShare(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]} 
+    <TouchableOpacity style={[styles.container, props.style]}
       onPress={props.onPress} disabled={props.disabled}>
-      <Icon name={props.icon || "share-variant"} style={[styles.icon, props.iconStyle]}></Icon>
+      <Icon name={props.icon || "share-variant"}
+        style={[props.disabled ? styles.iconDisabled : styles.icon, props.iconStyle]}></Icon>
     </TouchableOpacity>
   );
 }
@@ -31,7 +32,12 @@ const styles = StyleSheet.create({
     color: "rgba(255,108,134,1)",
     fontSize: 24,
     alignSelf: "center"
-  }
+  },
+  iconDisabled: {
+    color: "rgba(255,108,134,.5)",
+    fontSize: 24,
+    alignSelf: "center"
+  },
 });
 
 export default MaterialButtonShare;

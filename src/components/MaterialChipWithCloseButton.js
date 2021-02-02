@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 function MaterialChipWithCloseButton(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <Text style={styles.chipText}>Example Chip</Text>
+      <Text style={styles.chipText}>{props.title ?? 'Example Chip'}</Text>
       <Icon
         name={props.iconName || "close-circle"}
         style={[styles.iconStyle, props.iconStyle]}

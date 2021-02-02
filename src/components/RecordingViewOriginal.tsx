@@ -224,7 +224,6 @@ export default class RecordingView extends React.Component<Props, State> {
       },
       this._updateScreenForSoundStatus
     );
-    debugger
     this.sound = sound;
     this.setState({
       isLoading: false,
