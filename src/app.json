@@ -1,9 +1,8 @@
 {
-  "name": "records",
+  "name": "recordings",
   "expo": {
-    "name": "records",
-    "description": "",
-    "slug": "records",
+    "name": "recordings",
+    "slug": "recordings",
     "privacy": "public",
     "version": "1.0.0",
     "orientation": "portrait",

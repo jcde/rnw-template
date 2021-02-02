@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
-function CupertinoFooter1(props) {
+export function CupertinoFooter(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <TouchableOpacity /* Conditional navigation not supported at the moment */
+      <TouchableOpacity
         style={styles.btnWrapper1}
       >
         <MaterialCommunityIconsIcon
@@ -59,7 +59,7 @@ function CupertinoFooter1(props) {
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     backgroundColor: "rgba(255,255,255,1)",
     flexDirection: "row",
@@ -133,4 +133,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CupertinoFooter1;
+export default CupertinoFooter;

@@ -7,19 +7,21 @@ function MaterialChipWithCloseButton(props) {
     <View style={[styles.container, props.style]}>
       <Text style={styles.chipText}>Example Chip</Text>
       <Icon
-        name={props.iconStyle || "close-circle"}
-        style={styles.iconStyle}
+        name={props.iconName || "close-circle"}
+        style={[styles.iconStyle, props.iconStyle]}
       ></Icon>
+      {props.children}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#E0E0E0",
+    backgroundColor: "rgba(224, 224, 224, 0.86)",
     paddingLeft: 12,
     borderRadius: 50
   },
@@ -28,7 +30,8 @@ const styles = StyleSheet.create({
     color: "rgba(0,0,0,0.87)"
   },
   iconStyle: {
-    color: "#9E9E9E",
+    width: 24,
+    color: "white",
     fontSize: 24,
     marginLeft: 4,
     marginRight: 4

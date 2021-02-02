@@ -1,5 +1,5 @@
 {
-  "name": "records",
+  "name": "recordings",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -13,36 +13,35 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/slider": "*",
+    "expo": "*",
+    "expo-app-loading": "*",
+    "expo-av": "*",
+    "native-base": "*",
     "react": "*",
     "react-dom": "*",
     "react-native": "*",
-    "react-native-web": "*",
-    "expo": "*",
-    "expo-av": "*",
-    "react-native-unimodules": "*",
-
-    "expo-app-loading": "*", 
+    "react-native-dialog": "*",
     "react-native-gesture-handler": "*",
     "react-native-reanimated": "*",
     "react-native-screens": "*",
     "react-native-svg": "*",
+    "react-native-unimodules": "*",
+    "react-native-web": "*",
     "react-navigation": "*",
     "react-navigation-drawer": "*",
-    "react-navigation-stack": "*",
-    
-    "native-base": "*",
-    "@react-native-community/slider": "*"
+    "react-navigation-stack": "*"
   },
   "devDependencies": {
     "@babel/core": "*",
     "@expo/webpack-config": "*",
-    "react-scripts": "*",
-    "eslint": "*",
     "@react-native-community/eslint-config": "*",
-    "react-test-renderer": "*",
-    "typescript": "*",
     "@types/react": "*",
-    "@types/react-native": "*"
+    "@types/react-native": "*",
+    "eslint": "*",
+    "react-scripts": "*",
+    "react-test-renderer": "*",
+    "typescript": "*"
   },
   "jest": {
     "preset": "react-native"

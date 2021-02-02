@@ -4,26 +4,24 @@ import Slider from "@react-native-community/slider";
 
 function CupertinoSlider(props) {
   return (
-    <View style={[styles.container, props.style]}>
-      <Slider 
-        disabled={props.disabled}
-        /*value={this._getSeekSliderPosition()}
-              onValueChange={this._onSeekSliderValueChange}
-              onSlidingComplete={this._onSeekSliderSlidingComplete}*/ 
-        minimumValue={0}
-        maximumValue={100}
-        minimumTrackTintColor="#007AFF"
-        style={styles.slider}
-      ></Slider>
-    </View>
+    <Slider
+      disabled={props.disabled}
+      /*value={this._getSeekSliderPosition()}
+            onValueChange={this._onSeekSliderValueChange}
+            onSlidingComplete={this._onSeekSliderSlidingComplete}*/
+      minimumValue={0}
+      maximumValue={100}
+      minimumTrackTintColor="#007AFF"
+      style={props.style}
+      thumbTintColor={'white'}
+      maximumTrackTintColor={'white'}
+      minimumTrackTintColor={'green'}
+      trackHeight ={20}
+    ></Slider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    backgroundColor: "transparent"
-  },
   slider: {}
 });
 

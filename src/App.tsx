@@ -16,9 +16,9 @@ const DrawerNavigation = createDrawerNavigator({
 
 const StackNavigation = createStackNavigator(
   {
-    DrawerNavigation: {
+    /*DrawerNavigation: {
       screen: DrawerNavigation
-    },
+    },*/
     RecordingView: RecordingView,
     Untitled: Untitled
   },

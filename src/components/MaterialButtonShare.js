@@ -4,15 +4,15 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 function MaterialButtonShare(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
-      <Icon name={props.icon || "share-variant"} style={styles.icon}></Icon>
+    <TouchableOpacity style={[styles.container, props.style]} 
+      onPress={props.onPress} disabled={props.disabled}>
+      <Icon name={props.icon || "share-variant"} style={[styles.icon, props.iconStyle]}></Icon>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#3F51B5",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 28,
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     minHeight: 40
   },
   icon: {
-    color: "#fff",
+    color: "rgba(255,108,134,1)",
     fontSize: 24,
     alignSelf: "center"
   }
