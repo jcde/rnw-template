@@ -5,26 +5,22 @@ function MaterialCardWithoutImage(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.bodyContent}>
-        <Text style={styles.titleStyle}>Title goes here</Text>
-        <Text style={styles.subtitleStyle}>Subtitle here</Text>
+        {props.h && <Text style={styles.titleStyle}>{props.h}</Text>}
+        {false && <Text style={styles.subtitleStyle}>Subtitle here</Text>}
       </View>
       <View style={styles.body}>
         <Text style={styles.bodyText}>
-          BuilderX is a screen design tool which codes React Native for you
-          which design without boundaries, the code is generated simultaneously.
-          Save your designed components as symbol and then simply add it to your
-          design next time.Live preview works on real device. Shout out to the
-          Expo team to make it happen.
+          {props.children}
         </Text>
       </View>
-      <View style={styles.actionBody}>
+      {false && <View style={styles.actionBody}>
         <TouchableOpacity style={styles.actionButton1}>
           <Text style={styles.actionText1}>ACTION 1</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton2}>
           <Text style={styles.actionText2}>ACTION 2</Text>
         </TouchableOpacity>
-      </View>
+      </View>}
     </View>
   );
 }
@@ -68,7 +64,7 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     lineHeight: 20,
-    fontSize: 14,
+    fontSize: 20,
     color: "#424242",
     flexWrap: "wrap"
   },

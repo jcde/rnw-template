@@ -4,13 +4,13 @@ const styles = StyleSheet.create({
   footer: {
     height: 49,
     width: 375,
-    marginTop: 652
   },
   recordButtonRow: {
     height: 100,
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 20,
+    marginBottom: 20,
   },
   recordButton: {
     borderRadius: 50,
@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     marginLeft: 10,
     marginRight: 10,
-//    width: '100%',
     flexDirection: "row",
     justifyContent: 'flex-end',
   },
@@ -39,19 +38,26 @@ const styles = StyleSheet.create({
   trackSliderRow: {
     height: 40,
     flexDirection: "row",
-  }, 
+  },
   trackSlider: {
     width: 147,
     height: 30,
     marginTop: 5,
-    minimumTrackTintColor:'green',
+    minimumTrackTintColor: 'green',
   },
 
   startCard: {
-    height: 217,
-    width: 291,
-    marginTop: -455,
-    marginLeft: 42
+    flex: 1,
+    width: 300,
+    borderWidth: 0,
+    borderRadius: 20,
+    shadowColor: "rgba(255,108,134,1)",
+    shadowOffset: {
+      width: 30,
+      height: 35,
+      shadowBlur: 40,
+    },
+    elevation: 30,
   },
 
 });

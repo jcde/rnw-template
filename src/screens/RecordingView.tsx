@@ -273,8 +273,7 @@ function RecordingView(props) {
         <View />
         <Text style={{ textAlign: "center" }}
         >
-          You must enable audio recording permissions in order to use this
-          app.
+          You must enable audio recording permissions in order to use this app.
         </Text>
         <View />
       </View>
@@ -285,9 +284,19 @@ function RecordingView(props) {
     <View style={{
       flex: 1,
       opacity: isLoading ? DISABLED_OPACITY : 1.0,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      alignSelf: 'center', 
+      maxWidth: 600,
     }}>
+      <MaterialCardWithoutImage style={styles.startCard}
+        h='Record your voice'
+      >Begin by finding a relaxed position, sitting or lying down. Set aside a few minutes to relax.</MaterialCardWithoutImage>
+      {false && <MaterialCardWithoutImage style={styles.startCard}
+      >Breathe slowly inside...
+      and out...</MaterialCardWithoutImage>}
       <View style={{
-        flex: 1, justifyContent: "flex-end", alignItems: 'strech',
+        flex: 1, justifyContent: "flex-end", alignSelf: 'stretch',
         marginLeft: 10, marginRight: 10
       }}>
         <PlaySliderSaved index={2} recordings={recordings} redraw={setRecordings} />
@@ -339,12 +348,6 @@ function RecordingView(props) {
         btnWrapper3="Go Back"
         style={styles.footer}
       ></CupertinoFooter>
-
-
-      <MaterialCardWithoutImage
-        style={styles.startCard}
-      ></MaterialCardWithoutImage>
-
     </View >
   );
 }

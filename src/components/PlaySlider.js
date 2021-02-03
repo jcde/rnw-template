@@ -67,7 +67,7 @@ function PlaySlider(props) {
 
 const styles = StyleSheet.create({
   trackText: {
-    minWidth: 100,
+    minWidth: 80,
     margin: 5,
     alignSelf: 'center',
   },

@@ -15,3 +15,4 @@ node_modules/expo-av/build/Audio/*
 yarn-error.log*
 .vscode
 .eslint*
+web-build/
