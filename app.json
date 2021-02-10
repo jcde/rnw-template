@@ -1,0 +1,19 @@
+{
+  "name": "recordings",
+  "displayName": "Recordings",
+  "expo": {
+    "name": "recordings",
+    "slug": "recordings",
+    "privacy": "public",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "primaryColor": "#cccccc",
+    "entryPoint": "index.native.js",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "logy.recordings"
+    }
+  }
+}

@@ -6,7 +6,7 @@
     "expo_web": "expo start:web",
     "build_web": "expo build:web",
     "web": "react-scripts start",
-    "expo_android": "expo build:andriod",
+    "expo_android": "expo build:android",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
