@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     width: 147,
     height: 30,
     marginTop: 5,
-    minimumTrackTintColor: 'green',
   },
 
   startCard: {

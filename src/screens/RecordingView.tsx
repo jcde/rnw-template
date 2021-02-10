@@ -55,9 +55,12 @@ function RecordingView(props) {
   const [isPlaying, setIsPlaying] = useState(false)
   //const [isSeeking, setIsSeeking] = useState(null)
 
-  useEffect(async () => {
-    const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-    setHaveRecordingPermissions(response.status === "granted")
+  useEffect(() => {
+    async function getPerm() {
+      const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+      setHaveRecordingPermissions(response.status === "granted")
+    };
+    getPerm();
   }, [])
 
   const _onRecordPressed = async () => {
@@ -286,7 +289,7 @@ function RecordingView(props) {
       opacity: isLoading ? DISABLED_OPACITY : 1.0,
       justifyContent: 'flex-end',
       alignItems: 'center',
-      alignSelf: 'center', 
+      alignSelf: 'center',
       maxWidth: 600,
     }}>
       <MaterialCardWithoutImage style={styles.startCard}
@@ -326,7 +329,7 @@ function RecordingView(props) {
         ></ButtonShare>
       </View>
       <View>
-        <Dialog.Container visible={dialogAsk} onBackdropPress={cancelSound}>
+        <Dialog.Container visible={dialogAsk != 0} onBackdropPress={cancelSound}>
           <Dialog.Title>Save your recording</Dialog.Title>
           <Dialog.Description>
             TITLE

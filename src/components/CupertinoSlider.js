@@ -15,7 +15,6 @@ function CupertinoSlider(props) {
       style={props.style}
       thumbTintColor={'white'}
       maximumTrackTintColor={'white'}
-      minimumTrackTintColor={'green'}
       trackHeight ={20}
     ></Slider>
   );
